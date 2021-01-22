@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -14,13 +14,9 @@ const firebaseConfig = {
   appId: '1:317894399452:web:9773e7f17d9ca37e7eab19',
   measurementId: 'G-J4QJ0BQV5Y',
 };
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-const login = () => {
-  const provider = new firebase.auth.GithubAuthProvider();
-  firebase.auth().signInWithRedirect(provider);
-};
 
 const Login = () => {
   const [userInfo, setUserInfo] = useState({
@@ -42,7 +38,9 @@ const Login = () => {
     });
   }, []);
 
-  const logout = () => {
+  // useCallback só executa 1 vez com o segundo parâmetro vazio "[]", parecido com o useEffect,
+  // mas o segundo parâmetro "[]" e o useCallback irá executar toda vez que esse parâmetro mudar
+  const logout = useCallback(() => {
     firebase.auth().signOut().then(() => {
       console.log('deslogou');
       setUserInfo({
@@ -50,7 +48,12 @@ const Login = () => {
         user: null,
       });
     });
-  };
+  }, []);
+
+  const login = useCallback(() => {
+    const provider = new firebase.auth.GithubAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
+  });
 
   return (
     <Container>
