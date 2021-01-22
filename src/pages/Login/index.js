@@ -31,11 +31,16 @@ const Login = () => {
       console.log('dados do usuário: ', user);
       setUserInfo(
         {
-          isUserLoggedIn: !!userInfo.user,
-          user: userInfo.user,
+          isUserLoggedIn: !!user,
+          user,
         },
       );
     });
+  }, []);
+
+  const login = useCallback(() => {
+    const provider = new firebase.auth.GithubAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
   }, []);
 
   // useCallback só executa 1 vez com o segundo parâmetro vazio "[]", parecido com o useEffect,
@@ -48,11 +53,6 @@ const Login = () => {
         user: null,
       });
     });
-  }, []);
-
-  const login = useCallback(() => {
-    const provider = new firebase.auth.GithubAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
   }, []);
 
   return (
