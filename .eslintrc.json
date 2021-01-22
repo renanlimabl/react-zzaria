@@ -19,6 +19,7 @@
     "react"
   ],
   "rules": {
+    "no-shadow": "off",
     "class-methods-use-this": "off",
     "react/no-unused-state": 0,
     "no-console": "off",
