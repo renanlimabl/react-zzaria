@@ -53,7 +53,7 @@ const Login = () => {
   const login = useCallback(() => {
     const provider = new firebase.auth.GithubAuthProvider();
     firebase.auth().signInWithRedirect(provider);
-  });
+  }, []);
 
   return (
     <Container>
