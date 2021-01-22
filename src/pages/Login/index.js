@@ -18,17 +18,43 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 class Login extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isUserLoggedIn: false,
+      user: null,
+    };
+  }
+
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log('usuario logado ', user);
-      } else {
-        console.log('usuário ñ logado');
-      }
+      console.log('dados do usuário: ', user);
+      this.setState(
+        {
+          isUserLoggedIn: !!user,
+          user,
+        },
+      );
     });
   }
 
+  logout = () => {
+    firebase.auth().signOut().then(() => {
+      console.log('deslogou');
+      this.setState({
+        isUserLoggedIn: false,
+        user: null,
+      });
+    });
+  }
+
+  login = () => {
+    const provider = new firebase.auth.GithubAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
+  }
+
   render() {
+    const { isUserLoggedIn, user } = this.state;
     return (
       <Container>
         <Grid container justify="center" spacing={10}>
@@ -36,14 +62,19 @@ class Login extends PureComponent {
             <Logo style={{ width: '100%' }} />
           </Grid>
           <Grid item container justify="center" xs={12}>
-            <GithubButton onClick={() => {
-              const provider = new firebase.auth.GithubAuthProvider();
-              firebase.auth().signInWithRedirect(provider);
-            }}
-            >
-              Entrar com Github
-
-            </GithubButton>
+            {isUserLoggedIn && (
+              <>
+                <pre>{user.displayName}</pre>
+                <Button variant="contained" onClick={this.logout}>
+                  Sair
+                </Button>
+              </>
+            )}
+            {!isUserLoggedIn && (
+              <GithubButton onClick={this.login}>
+                Entrar com Github
+              </GithubButton>
+            )}
           </Grid>
         </Grid>
       </Container>
