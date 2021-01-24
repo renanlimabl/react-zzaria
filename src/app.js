@@ -36,24 +36,15 @@ function App({ location }) {
   }, []);
 
   if (!didCheckUserIn) {
-    console.log('ainda não checou se o user está logado ou não');
     return <LinearProgress />;
   }
 
-  console.log('já checou se o user está logado está logado ou não');
+  if (isUserLoggedIn && location.pathname === '/login') {
+    return <Redirect to="/" />;
+  }
 
-  if (isUserLoggedIn) {
-    if (location.pathname === '/login') {
-      console.log('usuário está logado e está no /login, então redirect to home "/"');
-      return <Redirect to="/" />;
-    }
-    console.log('usuário está logado MAS NÃO está na página de login');
-  } else {
-    console.log('usuário não está logado, redirecionar para /login');
-    if (location.pathname !== '/login') {
-      console.log('usuário não está logado, nem está na página de login');
-      return <Redirect to="/login" />;
-    }
+  if (!isUserLoggedIn && location.pathname !== '/login') {
+    return <Redirect to="/login" />;
   }
 
   return (
@@ -67,7 +58,9 @@ function App({ location }) {
 }
 
 App.propTypes = {
-  location: t.objectOf.isRequired,
+  location: t.PropTypes.shape({
+    pathname: t.PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default App;
