@@ -1,7 +1,8 @@
 import React, {
   Suspense, lazy, useContext, useEffect,
 } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import t from 'prop-types';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { LinearProgress } from '@material-ui/core';
 import firebase from './services/firebase';
 import { AuthContext } from './contexts/auth';
@@ -12,8 +13,10 @@ import { AuthContext } from './contexts/auth';
 const Main = lazy(() => import('./pages/Main'));
 const Login = lazy(() => import('./pages/Login'));
 
-function App() {
-  const { setUserInfo } = useContext(AuthContext);
+function App({ location }) {
+  const { setUserInfo, userInfo } = useContext(AuthContext);
+
+  const { isUserLoggedIn } = userInfo;
 
   // Verifica se o user está logado.
   useEffect(() => {
@@ -28,6 +31,20 @@ function App() {
     });
   }, []);
 
+  if (isUserLoggedIn) {
+    if (location.pathname === '/login') {
+      console.log('usuário está logado e está no /login, então redirect to home "/"');
+      return <Redirect to="/" />;
+    }
+    console.log('usuário está logado MAS NÃO está na página de login');
+  } else {
+    console.log('usuário não está logado, redirecionar para /login');
+    if (location.pathname !== '/login') {
+      console.log('usuário não está logado, nem está na página de login');
+      return <Redirect to="/login" />;
+    }
+  }
+
   return (
     <Suspense fallback={<LinearProgress />}>
       <Switch>
@@ -37,5 +54,9 @@ function App() {
     </Suspense>
   );
 }
+
+App.propTypes = {
+  location: t.objectOf.isRequired,
+};
 
 export default App;
