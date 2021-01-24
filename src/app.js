@@ -1,5 +1,5 @@
 import React, {
-  Suspense, lazy, useContext, useEffect,
+  Suspense, lazy, useContext, useEffect, useState,
 } from 'react';
 import t from 'prop-types';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -14,7 +14,8 @@ const Main = lazy(() => import('./pages/Main'));
 const Login = lazy(() => import('./pages/Login'));
 
 function App({ location }) {
-  const { setUserInfo, userInfo } = useContext(AuthContext);
+  const { setUserInfo, userInfo, logout } = useContext(AuthContext);
+  const [didCheckUserIn, setDidCheckUserIn] = useState(false);
 
   const { isUserLoggedIn } = userInfo;
 
@@ -28,8 +29,18 @@ function App({ location }) {
           user,
         },
       );
+      setDidCheckUserIn(true);
     });
+
+    window.logout = logout;
   }, []);
+
+  if (!didCheckUserIn) {
+    console.log('ainda não checou se o user está logado ou não');
+    return <LinearProgress />;
+  }
+
+  console.log('já checou se o user está logado está logado ou não');
 
   if (isUserLoggedIn) {
     if (location.pathname === '/login') {
