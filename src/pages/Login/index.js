@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, useContext,
+} from 'react';
 import styled from 'styled-components';
 import { Button, Grid } from '@material-ui/core';
 import firebase from '../../services/firebase';
+
+import { AuthContext } from '../../contexts/auth';
 import { ReactComponent as MainLogo } from './logo-react-zzaria.svg';
 
-const Login = () => {
+function Login() {
+  const { login } = useContext(AuthContext);
+
   const [userInfo, setUserInfo] = useState({
     isUserLoggedIn: false,
     user: null,
@@ -22,11 +28,6 @@ const Login = () => {
         },
       );
     });
-  }, []);
-
-  const login = useCallback(() => {
-    const provider = new firebase.auth.GithubAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
   }, []);
 
   // useCallback só executa 1 vez com o segundo parâmetro vazio "[]", parecido com o useEffect,
@@ -65,7 +66,7 @@ const Login = () => {
       </Grid>
     </Container>
   );
-};
+}
 
 const Container = styled.div`
   padding: 40px;
