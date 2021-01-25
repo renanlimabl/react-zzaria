@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import {
   AppBar,
-  Toolbar,
+  Toolbar as MaterialToobar,
   IconButton,
   Typography,
   Menu,
@@ -65,4 +65,11 @@ const Logo = styled(MainLogo)`
     stroke: #fff;
   }
 `;
+
+const Toolbar = styled(MaterialToobar)`
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+`;
+
 export default Main;
