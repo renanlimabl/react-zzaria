@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import {
   AppBar,
@@ -10,27 +10,44 @@ import {
 } from '@material-ui/core';
 
 import { AccountCircle } from '@material-ui/icons';
-
 import { ReactComponent as MainLogo } from '../Login/logo-react-zzaria.svg';
+import { AuthContext } from '../../contexts/auth';
 
-const Main = () => (
-  <AppBar>
-    <Toolbar>
-      <LogoContainer>
-        <Logo />
-      </LogoContainer>
-      <Typography>
-        Olá João =)
-      </Typography>
-      <IconButton color="inherit">
-        <AccountCircle />
-      </IconButton>
-      <Menu open={false}>
-        <MenuItem>Sair</MenuItem>
-      </Menu>
-    </Toolbar>
-  </AppBar>
-);
+const Main = () => {
+  const [anchorElement, setAnchorElement] = useState(null);
+  const { logout, userInfo } = useContext(AuthContext);
+
+  const handleOpenMenu = (e) => {
+    setAnchorElement(e.target);
+  };
+
+  const handleClose = () => {
+    setAnchorElement(null);
+  };
+
+  return (
+    <AppBar>
+      <Toolbar>
+        <LogoContainer>
+          <Logo />
+        </LogoContainer>
+        <Typography>
+          {`Olá ${userInfo.user.displayName.split(' ')[0]} =)`}
+        </Typography>
+        <IconButton color="inherit" onClick={handleOpenMenu}>
+          <AccountCircle />
+        </IconButton>
+        <Menu
+          open={!!anchorElement}
+          onClose={handleClose}
+          anchorEl={anchorElement}
+        >
+          <MenuItem onClick={logout}>Sair</MenuItem>
+        </Menu>
+      </Toolbar>
+    </AppBar>
+  );
+};
 
 const LogoContainer = styled.div`
   flex-grow: 1;
